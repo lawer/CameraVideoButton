@@ -52,6 +52,9 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
 
     private var enablePhotoTaking: Boolean = true
 
+    private var singleTapVideoRecord: Boolean = false
+
+
     private var videoDurationInMillis: Long = VIDEO_DURATION
 
     private var innerCirclePaint = Paint().apply {
@@ -136,6 +139,17 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
                 onSingleTap()
                 return true
             }
+
+            if(singleTapVideoRecord && !isRecording) {
+                onLongPressStart()
+                return true
+            }
+
+            if(singleTapVideoRecord && isRecording) {
+                onLongPressEnd()
+                return true
+            }
+
             return super.onSingleTapUp(e)
         }
     })
