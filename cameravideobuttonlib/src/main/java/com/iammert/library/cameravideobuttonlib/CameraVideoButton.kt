@@ -20,8 +20,6 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
         fun onDurationTooShortError()
 
         fun onSingleTap()
-
-        fun onCancelled()
     }
 
     var actionListener: ActionListener? = null
@@ -50,9 +48,9 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
 
     private var enableVideoRecording: Boolean = true
 
-    private var enablePhotoTaking: Boolean = true
+    private var enableSingleTapVideoRecord: Boolean = true
 
-    private var singleTapVideoRecord: Boolean = false
+    private var enablePhotoTaking: Boolean = true
 
 
     private var videoDurationInMillis: Long = VIDEO_DURATION
@@ -139,17 +137,6 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
                 onSingleTap()
                 return true
             }
-
-            if(singleTapVideoRecord && !isRecording) {
-                onLongPressStart()
-                return true
-            }
-
-            if(singleTapVideoRecord && isRecording) {
-                onLongPressEnd()
-                return true
-            }
-
             return super.onSingleTapUp(e)
         }
     })
@@ -169,30 +156,6 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
         } else true
     }
 
-    fun cancelRecording() {
-        if (isRecording.not()) {
-            return
-        }
-
-        isRecording = false
-        endRecordTime = System.currentTimeMillis()
-
-        innerCircleLongPressValueAnimator.setFloatValues(innerCircleCurrentSize, innerCircleMaxSize)
-        innerCircleLongPressValueAnimator.start()
-
-        outerCircleValueAnimator.setFloatValues(outerCircleCurrentSize, outerCircleMinSize)
-        outerCircleValueAnimator.start()
-
-        outerCircleBorderValueAnimator.cancel()
-
-        alphaAnimator.setFloatValues(1f, 0f)
-        alphaAnimator.start()
-
-        actionListener?.onCancelled()
-
-        resetRecordingValues()
-    }
-
     fun enableVideoRecording(enableVideoRecording: Boolean) {
         this.enableVideoRecording = enableVideoRecording
     }
@@ -201,8 +164,8 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
         this.enablePhotoTaking = enablePhotoTaking
     }
 
-    fun enableSingleTapVideoRecord(singleTapVideoRecord: Boolean) {
-        this.singleTapVideoRecord = singleTapVideoRecord
+    fun enableSingleTapVideoRecord(enableSingleTapVideoRecord: Boolean) {
+        this.enableSingleTapVideoRecord = enableSingleTapVideoRecord
     }
 
     fun setVideoDuration(durationInMillis: Long) {
@@ -251,7 +214,7 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
 
         if (isRecordTooShort(startRecordTime, endRecordTime, MINIMUM_VIDEO_DURATION_MILLIS)) {
             actionListener?.onDurationTooShortError()
-        } else if (isRecording) {
+        } else {
             actionListener?.onEndRecord()
         }
 
@@ -259,11 +222,8 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun onSingleTap() {
-        if (isRecording.not()) {
-            onLongPressStart()
-        } else {
-            onLongPressEnd()
-        }
+        actionListener?.onSingleTap()
+        innerCircleSingleTapValueAnimator.start()
     }
 
     private fun isRecordTooShort(startMillis: Long, endMillis: Long, minimumMillisRange: Long): Boolean {
