@@ -137,6 +137,18 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
                 onSingleTap()
                 return true
             }
+
+
+            if(enableSingleTapVideoRecord && !isRecording) {
+                onLongPressStart()
+                return true
+            }
+
+            if(enableSingleTapVideoRecord && isRecording) {
+                onLongPressEnd()
+                return true
+            }
+
             return super.onSingleTapUp(e)
         }
     })

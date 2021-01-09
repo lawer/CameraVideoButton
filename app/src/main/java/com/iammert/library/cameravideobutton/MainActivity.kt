@@ -15,10 +15,6 @@ class MainActivity : AppCompatActivity() {
         val videoRecordButton = findViewById<CameraVideoButton>(R.id.button)
         videoRecordButton.setVideoDuration(10000)
         videoRecordButton.actionListener = object : CameraVideoButton.ActionListener {
-            override fun onCancelled() {
-                Log.v("TEST", "onCancelled")
-            }
-
             override fun onStartRecord() {
                 Log.v("TEST", "onStartRecord")
             }
@@ -36,9 +32,5 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-
-        Handler().postDelayed(Runnable {
-            videoRecordButton.cancelRecording()
-        }, 5000)
     }
 }
