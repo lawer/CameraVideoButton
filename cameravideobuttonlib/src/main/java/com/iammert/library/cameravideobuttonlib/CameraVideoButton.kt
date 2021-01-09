@@ -201,6 +201,10 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
         this.enablePhotoTaking = enablePhotoTaking
     }
 
+    fun enableSingleTapVideoRecord(singleTapVideoRecord: Boolean) {
+        this.singleTapVideoRecord = singleTapVideoRecord
+    }
+
     fun setVideoDuration(durationInMillis: Long) {
         this.videoDurationInMillis = durationInMillis
         with(outerCircleBorderValueAnimator) {
