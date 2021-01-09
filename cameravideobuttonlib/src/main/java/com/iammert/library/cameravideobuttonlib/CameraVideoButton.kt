@@ -241,8 +241,11 @@ class CameraVideoButton @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     private fun onSingleTap() {
-        actionListener?.onSingleTap()
-        innerCircleSingleTapValueAnimator.start()
+        if (isRecording.not()) {
+            onLongPressStart()
+        } else {
+            onLongPressEnd()
+        }
     }
 
     private fun isRecordTooShort(startMillis: Long, endMillis: Long, minimumMillisRange: Long): Boolean {
